@@ -323,7 +323,7 @@
         <p class="intro">Need automotive electronic repair services? Fill out the form below and we'll get back to you as soon as possible.</p>
 
         <div class="contact-card">
-            <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+            <form id="contactForm">
                 <div class="form-group">
                     <label for="name">Name *</label>
                     <input type="text" id="name" name="name" required>
@@ -349,7 +349,8 @@
                     <textarea id="message" name="message" required placeholder="Please describe the issue you're experiencing..."></textarea>
                 </div>
 
-                <button type="submit" class="submit-btn">Send Message</button>
+                <button type="submit" class="submit-btn" id="submitBtn">Send Message</button>
+                <div id="formMessage" style="margin-top: 1rem; text-align: center; font-weight: 600;"></div>
             </form>
 
             <div class="contact-info">
@@ -412,6 +413,59 @@
             if (!nav.contains(event.target) && navLinks.classList.contains('active')) {
                 navLinks.classList.remove('active');
             }
+        });
+
+        // Handle form submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const formMessage = document.getElementById('formMessage');
+            
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            formMessage.textContent = '';
+            
+            // Collect form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                vehicle: document.getElementById('vehicle').value,
+                message: document.getElementById('message').value
+            };
+            
+            // Send to Google Sheets
+            fetch('https://script.google.com/macros/s/AKfycbz0i_EkkagOGxJktDWqoEGmuBvxeWUPyqklfYb1sOXbOs1VUpduQzkb3ll_wHM5_clg/exec', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(function() {
+                // Show success message
+                formMessage.style.color = '#28a745';
+                formMessage.textContent = 'Thank you! Your message has been sent successfully.';
+                
+                // Reset form
+                document.getElementById('contactForm').reset();
+                
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+            })
+            .catch(function(error) {
+                // Show error message
+                formMessage.style.color = '#dc3545';
+                formMessage.textContent = 'Oops! Something went wrong. Please try again.';
+                
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+            });
         });
     </script>
 </body>
