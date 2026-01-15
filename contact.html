@@ -154,6 +154,11 @@
             background: #357abd;
         }
 
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
         .contact-info {
             margin-top: 3rem;
             padding-top: 2rem;
@@ -436,17 +441,17 @@
                 message: document.getElementById('message').value
             };
             
-            // Send to Google Sheets
-            fetch('https://script.google.com/macros/s/AKfycbz0i_EkkagOGxJktDWqoEGmuBvxeWUPyqklfYb1sOXbOs1VUpduQzkb3ll_wHM5_clg/exec', {
+            // Send to Google Sheets - MUST UPDATE URL AFTER DEPLOYMENT
+            fetch('YOUR_NEW_DEPLOYMENT_URL_HERE', {
                 method: 'POST',
-                mode: 'no-cors',
+                mode: 'no-cors', // Use no-cors to avoid preflight issues
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'text/plain;charset=utf-8', // Use text/plain for no-cors compatibility
                 },
                 body: JSON.stringify(formData)
             })
             .then(function() {
-                // Show success message
+                // With no-cors, we assume success if the request completes
                 formMessage.style.color = '#28a745';
                 formMessage.textContent = 'Thank you! Your message has been sent successfully.';
                 
